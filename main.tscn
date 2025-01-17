@@ -9,7 +9,9 @@ bg_color = Color(0, 0, 0, 1)
 script = ExtResource("1_bvny7")
 gravity = 150.0
 particle_size = 20.0
+particle_spacing = 22.37
 collision_damping = 1.0
+num_particles = 50
 bounds_size = Vector2(600, 400)
 
 [node name="Camera2D" type="Camera2D" parent="."]
