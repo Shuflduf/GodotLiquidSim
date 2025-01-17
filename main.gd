@@ -11,6 +11,7 @@ extends Node2D
 
 var particle_positions: Array[Vector2]
 var particle_velocities: Array[Vector2]
+var densities: Array[float]
 
 func _ready() -> void:
     particle_positions.resize(num_particles)
@@ -45,6 +46,10 @@ func _draw() -> void:
         draw_circle(particle_positions[i], particle_size, Color.LIGHT_BLUE)
     draw_rect(Rect2(-bounds_size.x / 2, -bounds_size.y / 2, bounds_size.x, bounds_size.y), Color.BLUE, false, 1.0)
 
+func update_densities():
+    for i in num_particles:
+        densities[i] = calculate_density(particle_positions[i])
+
 func resolve_collisions(index: int):
     var half_bounds_size = bounds_size / 2 - Vector2.ONE * particle_size
     if abs(particle_positions[index].x) > half_bounds_size.x:
@@ -55,9 +60,17 @@ func resolve_collisions(index: int):
         particle_velocities[index].y *= -collision_damping
 
 static func smoothing_kernel(radius: float, dst: float) -> float:
-    var volume = PI * pow(radius, 8) / 4
-    var value = max(0, radius * radius - dst * dst)
-    return value * value * value / volume
+    if dst >= radius:
+        return 0.0
+
+    var volume = PI * pow(radius, 4) / 6
+    return (radius - dst) * (radius - dst) / volume
+
+static func smoothing_kernel_derivative(dst: float, radius: float) -> float:
+    if dst >= radius:
+        return 0
+    var p_scale = -12 / (PI * pow(radius, 4))
+    return (dst - radius) * p_scale
 
 func calculate_density(point: Vector2) -> float:
     var density = 0.0
@@ -69,3 +82,13 @@ func calculate_density(point: Vector2) -> float:
         density += MASS * influence
 
     return density
+
+func calculate_property_gradient(point: Vector2) -> Vector2:
+    var property_gradient = Vector2.ZERO
+
+    for i in particle_positions.size():
+        var dst = (particle_positions[i] - point).length()
+        var dir = (particle_positions[i] - point) / dst
+        var slope = smoothing_kernel_derivative(dst, smoothing_radius)
+        var density = densities[i]
+        property_gradient += part
