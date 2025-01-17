@@ -3,9 +3,10 @@ extends Node2D
 @export var playing: bool
 @export var gravity: float
 @export var particle_size: float
+@export var smoothing_radius: float
 @export var particle_spacing: float
 @export_range(0.0, 1.0) var collision_damping: float
-@export var num_particles: int
+@export_range(2, 500) var num_particles: int
 @export var bounds_size: Vector2
 
 var particle_positions: Array[Vector2]
@@ -16,13 +17,16 @@ func _ready() -> void:
     particle_velocities.resize(num_particles)
 
     var particles_per_row = int(sqrt(num_particles))
+    @warning_ignore("integer_division")
     var particles_per_col = (num_particles - 1) / particles_per_row + 1
     var spacing = particle_size * 2 + particle_spacing
 
     for i in num_particles:
         var x = (i % particles_per_row - particles_per_row / 2.0 + 0.5) * spacing
+        @warning_ignore("integer_division")
         var y = (i / particles_per_row - particles_per_col / 2.0 + 0.5) * spacing
         particle_positions[i] = Vector2(x, y)
+        particle_velocities[i] = Vector2.ZERO
 
 
 func _process(delta: float) -> void:
@@ -49,3 +53,19 @@ func resolve_collisions(index: int):
     if abs(particle_positions[index].y) > half_bounds_size.y:
         particle_positions[index].y = half_bounds_size.y * sign(particle_positions[index].y)
         particle_velocities[index].y *= -collision_damping
+
+static func smoothing_kernel(radius: float, dst: float) -> float:
+    var volume = PI * pow(radius, 8) / 4
+    var value = max(0, radius * radius - dst * dst)
+    return value * value * value / volume
+
+func calculate_density(point: Vector2) -> float:
+    var density = 0.0
+    const MASS = 1.0
+
+    for pos in particle_positions:
+        var dst = (pos - point).length()
+        var influence = smoothing_kernel(smoothing_radius, dst)
+        density += MASS * influence
+
+    return density
