@@ -34,24 +34,23 @@ func _ready() -> void:
         particle_positions[i] = Vector2(x, y)
         particle_velocities[i] = Vector2.ZERO
 
+    update_densities()
+
 
 func _process(delta: float) -> void:
     if playing:
         for i in range(particle_positions.size()):
-            particle_velocities[i] += Vector2.DOWN * gravity * delta   
+            particle_velocities[i] += Vector2.DOWN * gravity * delta
             densities[i] = calculate_density(particle_positions[i])
-            
-            print("Density of particle ", i, ": ", densities[i])
+
             if densities[i] == 0:
-                print("Warning: Density is zero for particle ", i)
                 continue
-            
+
             var pressure_force = calculate_pressure_force(i)
-            print("Pressure force on particle ", i, ": ", pressure_force)
-            
+
             var pressure_accel = pressure_force / densities[i]
-            particle_velocities[i] += pressure_accel * delta
-            
+            particle_velocities[i] = pressure_accel * delta
+
             particle_positions[i] += particle_velocities[i] * delta
             resolve_collisions(i)
     else:
@@ -107,13 +106,13 @@ func calculate_pressure_force(particle_index: int) -> Vector2:
     for i in particle_positions.size():
         if particle_index == i:
             continue
-            
+
         var offset = particle_positions[i] - particle_positions[particle_index]
         var dst = offset.length()
         var dir = offset / dst if dst != 0 else random_dir()
         var slope = smoothing_kernel_derivative(dst, smoothing_radius)
         var density = densities[i]
-        pressure_force += -convert_density_to_pressure(density) * dir * slope * mass / density
+        pressure_force += convert_density_to_pressure(density) * dir * slope * mass / density
     return pressure_force
 
 func convert_density_to_pressure(density: float) -> float:
