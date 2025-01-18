@@ -49,7 +49,7 @@ func _process(delta: float) -> void:
             var pressure_force = calculate_pressure_force(i)
 
             var pressure_accel = pressure_force / densities[i]
-            particle_velocities[i] = pressure_accel * delta
+            particle_velocities[i] += pressure_accel * delta
 
             particle_positions[i] += particle_velocities[i] * delta
             resolve_collisions(i)
@@ -112,7 +112,8 @@ func calculate_pressure_force(particle_index: int) -> Vector2:
         var dir = offset / dst if dst != 0 else random_dir()
         var slope = smoothing_kernel_derivative(dst, smoothing_radius)
         var density = densities[i]
-        pressure_force += convert_density_to_pressure(density) * dir * slope * mass / density
+        var shared_pressure = calculate_shared_pressure(density, densities[particle_index])
+        pressure_force += shared_pressure * dir * slope * mass / density
     return pressure_force
 
 func convert_density_to_pressure(density: float) -> float:
@@ -120,6 +121,10 @@ func convert_density_to_pressure(density: float) -> float:
     var pressure = density_error * pressure_multiplier
     return pressure
 
+func calculate_shared_pressure(dens_a: float, dens_b: float) -> float:
+    var pres_a = convert_density_to_pressure(dens_a)
+    var pres_b = convert_density_to_pressure(dens_b)
+    return (pres_a + pres_b) / 2
 
 static func random_dir() -> Vector2:
     var angle = randf_range(0, TAU)
