@@ -1,13 +1,17 @@
 extends Node2D
 
 @export var playing: bool
-@export var gravity: float
-@export var particle_size: float
-@export var smoothing_radius: float
-@export var particle_spacing: float
-@export_range(0.0, 1.0) var collision_damping: float
-@export_range(2, 500) var num_particles: int
-@export var bounds_size: Vector2
+@export var gravity: float = 150.0
+@export var particle_size: float = 8.0
+@export var smoothing_radius: float = 100.0
+@export var particle_spacing: float = 8.0
+@export var target_density: float
+@export var pressure_multiplier: float
+@export var mass: float = 1.0
+
+@export_range(0.0, 1.0) var collision_damping: float = 1.0
+@export_range(2, 500) var num_particles: int = 100
+@export var bounds_size: Vector2 = Vector2(100.0, 100.0)
 
 var particle_positions: Array[Vector2]
 var particle_velocities: Array[Vector2]
@@ -16,6 +20,7 @@ var densities: Array[float]
 func _ready() -> void:
     particle_positions.resize(num_particles)
     particle_velocities.resize(num_particles)
+    densities.resize(num_particles)
 
     var particles_per_row = int(sqrt(num_particles))
     @warning_ignore("integer_division")
@@ -32,8 +37,21 @@ func _ready() -> void:
 
 func _process(delta: float) -> void:
     if playing:
-        for i in particle_positions.size():
-            particle_velocities[i] += Vector2.DOWN * gravity * delta
+        for i in range(particle_positions.size()):
+            particle_velocities[i] += Vector2.DOWN * gravity * delta   
+            densities[i] = calculate_density(particle_positions[i])
+            
+            print("Density of particle ", i, ": ", densities[i])
+            if densities[i] == 0:
+                print("Warning: Density is zero for particle ", i)
+                continue
+            
+            var pressure_force = calculate_pressure_force(i)
+            print("Pressure force on particle ", i, ": ", pressure_force)
+            
+            var pressure_accel = pressure_force / densities[i]
+            particle_velocities[i] += pressure_accel * delta
+            
             particle_positions[i] += particle_velocities[i] * delta
             resolve_collisions(i)
     else:
@@ -83,12 +101,27 @@ func calculate_density(point: Vector2) -> float:
 
     return density
 
-func calculate_property_gradient(point: Vector2) -> Vector2:
-    var property_gradient = Vector2.ZERO
+func calculate_pressure_force(particle_index: int) -> Vector2:
+    var pressure_force = Vector2.ZERO
 
     for i in particle_positions.size():
-        var dst = (particle_positions[i] - point).length()
-        var dir = (particle_positions[i] - point) / dst
+        if particle_index == i:
+            continue
+            
+        var offset = particle_positions[i] - particle_positions[particle_index]
+        var dst = offset.length()
+        var dir = offset / dst if dst != 0 else random_dir()
         var slope = smoothing_kernel_derivative(dst, smoothing_radius)
         var density = densities[i]
-        property_gradient += part
+        pressure_force += -convert_density_to_pressure(density) * dir * slope * mass / density
+    return pressure_force
+
+func convert_density_to_pressure(density: float) -> float:
+    var density_error = density - target_density
+    var pressure = density_error * pressure_multiplier
+    return pressure
+
+
+static func random_dir() -> Vector2:
+    var angle = randf_range(0, TAU)
+    return Vector2(sin(angle), cos(angle))
