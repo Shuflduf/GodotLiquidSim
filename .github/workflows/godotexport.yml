@@ -33,19 +33,9 @@ jobs:
         unzip Godot_v4.3-stable_export_templates.tpz
         mv templates/* ~/.local/share/godot/export_templates/4.3.stable/
         
-        # Debug: Check template directory contents
-        echo "Template directory contents:"
-        ls -la ~/.local/share/godot/export_templates/4.3.stable/
-
     # Create build directory
     - name: Create build directory
       run: mkdir -p build/web
-
-      # Add this step before the export step
-    - name: Disable unnecessary addons
-      run: |
-        sed -i '/res:\/\/addons\/globalize-plugins\/plugin.cfg/d' project.godot
-        sed -i '/res:\/\/addons\/godot_super-wakatime\/plugin.cfg/d' project.godot
 
     # Export the project
     - name: Export project
