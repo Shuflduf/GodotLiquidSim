@@ -12,5 +12,6 @@ layout_mode = 2
 
 [node name="CheckButton" type="CheckButton" parent="."]
 layout_mode = 2
+focus_mode = 0
 
 [connection signal="toggled" from="CheckButton" to="." method="_on_check_button_toggled"]

@@ -11,9 +11,11 @@ bg_color = Color(0, 0, 0, 1)
 
 [node name="World" type="Node2D"]
 script = ExtResource("1_bvny7")
-num_particles = 50
+num_particles = 49
 
 [node name="Camera2D" type="Camera2D" parent="."]
+offset = Vector2(120, 0)
+zoom = Vector2(1.2, 1.2)
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 layer = -128
@@ -26,111 +28,158 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_x0arq")
 
-[node name="Control" type="Control" parent="CanvasLayer"]
-layout_mode = 3
+[node name="Control" type="MarginContainer" parent="CanvasLayer"]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
 
-[node name="ValueHandlers" type="VBoxContainer" parent="CanvasLayer/Control"]
-layout_mode = 1
-anchors_preset = 11
-anchor_left = 1.0
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = -155.0
-grow_horizontal = 0
-grow_vertical = 2
+[node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer/Control"]
+layout_mode = 2
+size_flags_horizontal = 8
+
+[node name="ValueHandlers" type="VBoxContainer" parent="CanvasLayer/Control/VBoxContainer"]
+layout_mode = 2
 script = ExtResource("2_wdsku")
 
-[node name="Playing" parent="CanvasLayer/Control/ValueHandlers" instance=ExtResource("3_d5nkx")]
+[node name="Playing" parent="CanvasLayer/Control/VBoxContainer/ValueHandlers" instance=ExtResource("3_d5nkx")]
 layout_mode = 2
 display_name = "Playing"
 property_name = "playing"
 
-[node name="Gravity" parent="CanvasLayer/Control/ValueHandlers" instance=ExtResource("2_iyhjq")]
+[node name="Gravity" parent="CanvasLayer/Control/VBoxContainer/ValueHandlers" instance=ExtResource("2_iyhjq")]
 layout_mode = 2
 display_name = "Gravity"
 property_name = "gravity"
 lower_range = -500.0
 upper_range = 500.0
 
-[node name="ParticleSize" parent="CanvasLayer/Control/ValueHandlers" instance=ExtResource("2_iyhjq")]
+[node name="ParticleSize" parent="CanvasLayer/Control/VBoxContainer/ValueHandlers" instance=ExtResource("2_iyhjq")]
 layout_mode = 2
 display_name = "Particle Size"
 property_name = "particle_size"
 lower_range = 1.0
 upper_range = 200.0
 
-[node name="SmoothingRadius" parent="CanvasLayer/Control/ValueHandlers" instance=ExtResource("2_iyhjq")]
+[node name="SmoothingRadius" parent="CanvasLayer/Control/VBoxContainer/ValueHandlers" instance=ExtResource("2_iyhjq")]
 layout_mode = 2
 display_name = "Smoothing Radius"
 property_name = "smoothing_radius"
-upper_range = 100.0
+upper_range = 200.0
 
-[node name="ParticleSpacing" parent="CanvasLayer/Control/ValueHandlers" instance=ExtResource("2_iyhjq")]
+[node name="ParticleSpacing" parent="CanvasLayer/Control/VBoxContainer/ValueHandlers" instance=ExtResource("2_iyhjq")]
 layout_mode = 2
 display_name = "Particle Spacing"
 property_name = "particle_spacing"
 upper_range = 50.0
 
-[node name="TargetDensity" parent="CanvasLayer/Control/ValueHandlers" instance=ExtResource("2_iyhjq")]
+[node name="TargetDensity" parent="CanvasLayer/Control/VBoxContainer/ValueHandlers" instance=ExtResource("2_iyhjq")]
 layout_mode = 2
 display_name = "Target Density"
 property_name = "target_density"
 upper_range = 100.0
 
-[node name="PressureMultiplier" parent="CanvasLayer/Control/ValueHandlers" instance=ExtResource("2_iyhjq")]
+[node name="PressureMultiplier" parent="CanvasLayer/Control/VBoxContainer/ValueHandlers" instance=ExtResource("2_iyhjq")]
 layout_mode = 2
 display_name = "Pressure Multiplier"
 property_name = "pressure_multiplier"
 upper_range = 100.0
 
-[node name="Mass" parent="CanvasLayer/Control/ValueHandlers" instance=ExtResource("2_iyhjq")]
+[node name="Mass" parent="CanvasLayer/Control/VBoxContainer/ValueHandlers" instance=ExtResource("2_iyhjq")]
 layout_mode = 2
 display_name = "Chaos"
 property_name = "mass"
 upper_range = 5.0
 
-[node name="MouseStrength" parent="CanvasLayer/Control/ValueHandlers" instance=ExtResource("2_iyhjq")]
+[node name="MouseStrength" parent="CanvasLayer/Control/VBoxContainer/ValueHandlers" instance=ExtResource("2_iyhjq")]
 layout_mode = 2
 display_name = "Mouse Strength"
 property_name = "mouse_strength"
 upper_range = 500.0
 
-[node name="Damping" parent="CanvasLayer/Control/ValueHandlers" instance=ExtResource("2_iyhjq")]
+[node name="Damping" parent="CanvasLayer/Control/VBoxContainer/ValueHandlers" instance=ExtResource("2_iyhjq")]
 layout_mode = 2
 display_name = "Damping"
 property_name = "collision_damping"
 upper_range = 1.0
 
-[node name="Label" parent="CanvasLayer/Control/ValueHandlers/Damping" index="0"]
+[node name="Label" parent="CanvasLayer/Control/VBoxContainer/ValueHandlers/Damping" index="0"]
 text = "Damping"
 
-[node name="HSlider" parent="CanvasLayer/Control/ValueHandlers/Damping" index="1"]
+[node name="HSlider" parent="CanvasLayer/Control/VBoxContainer/ValueHandlers/Damping" index="1"]
 max_value = 1.0
 step = 0.1
 value = 1.0
 
-[node name="SpinBox" parent="CanvasLayer/Control/ValueHandlers/Damping" index="2"]
+[node name="SpinBox" parent="CanvasLayer/Control/VBoxContainer/ValueHandlers/Damping" index="2"]
 max_value = 1.0
 step = 0.1
 value = 1.0
 
-[node name="Amount" parent="CanvasLayer/Control/ValueHandlers" instance=ExtResource("2_iyhjq")]
+[node name="Amount" parent="CanvasLayer/Control/VBoxContainer/ValueHandlers" instance=ExtResource("2_iyhjq")]
 layout_mode = 2
 display_name = "Amount"
 property_name = "num_particles"
 lower_range = 2.0
 upper_range = 625.0
 
-[node name="Bounds" parent="CanvasLayer/Control/ValueHandlers" instance=ExtResource("4_vu2tq")]
+[node name="Bounds" parent="CanvasLayer/Control/VBoxContainer/ValueHandlers" instance=ExtResource("4_vu2tq")]
 layout_mode = 2
 display_name = "Bounds"
 property_name = "bounds_size"
 lower_range = Vector2(1, 1)
 upper_range = Vector2(1000, 1000)
 
-[editable path="CanvasLayer/Control/ValueHandlers/Damping"]
+[node name="Label" type="Label" parent="CanvasLayer/Control/VBoxContainer"]
+custom_minimum_size = Vector2(1, 0)
+layout_mode = 2
+size_flags_vertical = 10
+text = "If it doesn't look like changing a value does anything, stop and then restart everything"
+autowrap_mode = 3
+
+[node name="Reset" type="Button" parent="CanvasLayer/Control/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 8
+focus_mode = 0
+text = "Reset All"
+
+[node name="Popup" type="Popup" parent="CanvasLayer/Control/VBoxContainer"]
+title = "Controls"
+initial_position = 1
+size = Vector2i(280, 77)
+visible = true
+borderless = false
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer/Control/VBoxContainer/Popup"]
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="Label" type="Label" parent="CanvasLayer/Control/VBoxContainer/Popup/VBoxContainer"]
+layout_mode = 2
+text = "LMB - Attract"
+
+[node name="Label2" type="Label" parent="CanvasLayer/Control/VBoxContainer/Popup/VBoxContainer"]
+layout_mode = 2
+text = "RMB - Repel"
+
+[node name="Label3" type="Label" parent="CanvasLayer/Control/VBoxContainer/Popup/VBoxContainer"]
+layout_mode = 2
+tooltip_text = "NOTE: LMB or RMB has to be held down"
+mouse_filter = 1
+text = "Mouse Wheel - Change Effect Radius"
+
+[node name="ViewControls" type="Button" parent="CanvasLayer/Control/VBoxContainer"]
+layout_mode = 2
+text = "View Controls
+"
+
+[connection signal="pressed" from="CanvasLayer/Control/VBoxContainer/Reset" to="CanvasLayer/Control/VBoxContainer/ValueHandlers" method="_on_reset_pressed"]
+[connection signal="popup_hide" from="CanvasLayer/Control/VBoxContainer/Popup" to="CanvasLayer/Control/VBoxContainer/ValueHandlers" method="_on_popup_popup_hide"]
+[connection signal="pressed" from="CanvasLayer/Control/VBoxContainer/ViewControls" to="CanvasLayer/Control/VBoxContainer/ValueHandlers" method="_on_view_controls_pressed"]
+
+[editable path="CanvasLayer/Control/VBoxContainer/ValueHandlers/Damping"]
