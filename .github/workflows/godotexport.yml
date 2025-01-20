@@ -41,6 +41,12 @@ jobs:
     - name: Create build directory
       run: mkdir -p build/web
 
+      # Add this step before the export step
+    - name: Disable unnecessary addons
+      run: |
+        sed -i '/res:\/\/addons\/globalize-plugins\/plugin.cfg/d' project.godot
+        sed -i '/res:\/\/addons\/godot_super-wakatime\/plugin.cfg/d' project.godot
+
     # Export the project
     - name: Export project
       run: |
