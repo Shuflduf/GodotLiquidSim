@@ -2,34 +2,16 @@ extends Node2D
 
 @export var playing: bool = true
 @export var gravity: float = 0.0
-@export var particle_size: float = 8.0:
-    set(value):
-        particle_size = clamp(value, 1.0, INF)
-@export var smoothing_radius: float = 100.0:
-    set(value):
-        smoothing_radius = clamp(value, 0.0, INF)
-@export var particle_spacing: float = 8.0:
-    set(value):
-        particle_spacing = clamp(value, 0.0, INF)
-@export var target_density: float = 10.0:
-    set(value):
-        target_density = clamp(value, 0.0, INF)
-@export var pressure_multiplier: float = 5.0:
-    set(value):
-        pressure_multiplier = clamp(value, 0.0, INF)
-@export var mass: float = 1.0:
-    set(value):
-        mass = clamp(value, 0.0, INF)
+@export var particle_size: float = 8.0
+@export var smoothing_radius: float = 100.0
+@export var particle_spacing: float = 8.0
+@export var target_density: float = 10.0
+@export var pressure_multiplier: float = 5.0
+@export var mass: float = 1.0
 
-@export_range(0.0, 1.0) var collision_damping: float = 0.6:
-    set(value):
-        collision_damping = clamp(value, 0.0, 1.0)
-@export_range(2, 500) var num_particles: int = 100:
-    set(value):
-        num_particles = clamp(value, 2, 625)
-@export var bounds_size: Vector2 = Vector2(600.0, 400.0):
-    set(value):
-        bounds_size = clamp(value, Vector2.ZERO, Vector2(800.0, 800.0))
+@export_range(0.0, 1.0) var collision_damping: float = 0.6
+@export_range(2, 500) var num_particles: int = 100
+@export var bounds_size: Vector2 = Vector2(600.0, 400.0)
 
 var particle_positions: Array[Vector2]
 var particle_velocities: Array[Vector2]

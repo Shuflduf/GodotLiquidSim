@@ -1,7 +1,8 @@
-[gd_scene load_steps=4 format=3 uid="uid://boefshpkw5c1u"]
+[gd_scene load_steps=5 format=3 uid="uid://boefshpkw5c1u"]
 
 [ext_resource type="Script" path="res://main.gd" id="1_bvny7"]
 [ext_resource type="PackedScene" uid="uid://doifiw4dk064w" path="res://number_slider.tscn" id="2_iyhjq"]
+[ext_resource type="Script" path="res://value_handlers.gd" id="2_wdsku"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_x0arq"]
 bg_color = Color(0, 0, 0, 1)
@@ -31,7 +32,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer/Control"]
+[node name="ValueHandlers" type="VBoxContainer" parent="CanvasLayer/Control"]
 layout_mode = 1
 anchors_preset = 11
 anchor_left = 1.0
@@ -40,6 +41,48 @@ anchor_bottom = 1.0
 offset_left = -155.0
 grow_horizontal = 0
 grow_vertical = 2
+script = ExtResource("2_wdsku")
 
-[node name="Gravity" parent="CanvasLayer/Control/VBoxContainer" instance=ExtResource("2_iyhjq")]
+[node name="Gravity" parent="CanvasLayer/Control/ValueHandlers" instance=ExtResource("2_iyhjq")]
 layout_mode = 2
+display_name = "Gravity"
+property_name = "gravity"
+upper_range = 1000.0
+
+[node name="ParticleSize" parent="CanvasLayer/Control/ValueHandlers" instance=ExtResource("2_iyhjq")]
+layout_mode = 2
+display_name = "Particle Size"
+property_name = "particle_size"
+lower_range = 1.0
+upper_range = 200.0
+
+[node name="SmoothingRadius" parent="CanvasLayer/Control/ValueHandlers" instance=ExtResource("2_iyhjq")]
+layout_mode = 2
+display_name = "Smoothing Radius"
+property_name = "smoothing_radius"
+lower_range = 1.0
+upper_range = 200.0
+
+[node name="ParticleSpacing" parent="CanvasLayer/Control/ValueHandlers" instance=ExtResource("2_iyhjq")]
+layout_mode = 2
+display_name = "Particle Spacing"
+property_name = "particle_spacing"
+upper_range = 200.0
+
+[node name="TargetDensity" parent="CanvasLayer/Control/ValueHandlers" instance=ExtResource("2_iyhjq")]
+layout_mode = 2
+display_name = "Target Density"
+property_name = "target_density"
+upper_range = 200.0
+
+[node name="PressureMultiplier" parent="CanvasLayer/Control/ValueHandlers" instance=ExtResource("2_iyhjq")]
+layout_mode = 2
+display_name = "Pressure Multiplier"
+property_name = "pressure_multiplier"
+upper_range = 200.0
+
+[node name="Mass" parent="CanvasLayer/Control/ValueHandlers" instance=ExtResource("2_iyhjq")]
+layout_mode = 2
+display_name = "Mass"
+property_name = "mass"
+upper_range = 5.0

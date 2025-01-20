@@ -1,0 +1,57 @@
+[gd_scene load_steps=2 format=3 uid="uid://c8b2dhjgesu0i"]
+
+[ext_resource type="Script" path="res://number_slider.gd" id="1_4kjko"]
+
+[node name="HBoxContainer" type="HBoxContainer"]
+theme_override_constants/separation = 10
+alignment = 2
+script = ExtResource("1_4kjko")
+lower_range = 0.0
+upper_range = 0.0
+
+[node name="Label" type="Label" parent="."]
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="X" type="HBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="VBoxContainer/X"]
+layout_mode = 2
+text = "X"
+
+[node name="HSliderX" type="HSlider" parent="VBoxContainer/X"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+size_flags_vertical = 4
+
+[node name="SpinBoxX" type="SpinBox" parent="VBoxContainer/X"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 0
+
+[node name="Y" type="HBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
+
+[node name="Label2" type="Label" parent="VBoxContainer/Y"]
+layout_mode = 2
+text = "Y"
+
+[node name="HSliderY" type="HSlider" parent="VBoxContainer/Y"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+size_flags_vertical = 4
+
+[node name="SpinBoxY" type="SpinBox" parent="VBoxContainer/Y"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 0
+
+[connection signal="value_changed" from="VBoxContainer/X/HSliderX" to="." method="_on_h_slider_x_value_changed"]
+[connection signal="value_changed" from="VBoxContainer/X/SpinBoxX" to="." method="_on_spin_box_x_value_changed"]
+[connection signal="value_changed" from="VBoxContainer/Y/HSliderY" to="." method="_on_h_slider_y_value_changed"]
+[connection signal="value_changed" from="VBoxContainer/Y/SpinBoxY" to="." method="_on_spin_box_y_value_changed"]
