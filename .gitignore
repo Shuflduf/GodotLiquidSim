@@ -14,6 +14,9 @@ export_presets.cfg
 data_*/
 mono_crash.*.json
 
+# Build
+build/
+
 # Personal plugins
 addons/globalize-plugins/
 addons/godot_super-wakatime/
