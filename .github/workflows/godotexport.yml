@@ -1,0 +1,80 @@
+name: Godot Export and Deploy to Web Branch
+
+on: 
+  push:
+    branches:
+      - main
+
+jobs:
+  export_game:
+    runs-on: ubuntu-latest
+    permissions: write-all
+    name: Export Game
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    # Download and setup Godot
+    - name: Download Godot
+      run: |
+        wget https://github.com/godotengine/godot/releases/download/4.3-stable/Godot_v4.3-stable_linux.x86_64.zip
+        unzip Godot_v4.3-stable_linux.x86_64.zip
+        mv Godot_v4.3-stable_linux.x86_64 godot
+        chmod +x godot
+
+    # Download and setup export templates with correct path
+    - name: Download Export Templates
+      run: |
+        wget https://github.com/godotengine/godot-builds/releases/download/4.3-stable/Godot_v4.3-stable_export_templates.tpz
+        mkdir -p ~/.local/share/godot/export_templates/4.3.stable
+        unzip Godot_v4.3-stable_export_templates.tpz
+        mv templates/* ~/.local/share/godot/export_templates/4.3.stable/
+        
+        # Debug: Check template directory contents
+        echo "Template directory contents:"
+        ls -la ~/.local/share/godot/export_templates/4.3.stable/
+
+    # Create build directory
+    - name: Create build directory
+      run: mkdir -p build/web
+
+    # Export the project
+    - name: Export project
+      run: |
+        echo "Exporting project..."
+        ./godot --headless --verbose --export-release "Web" build/web/index.html || {
+          echo "Export failed. Template directory contents:"
+          ls -la ~/.local/share/godot/export_templates/4.3.stable/
+          exit 1
+        }
+        
+        echo "Export complete. Checking results:"
+        ls -la build/web/
+
+    - name: Deploy to web branch
+      if: success()
+      run: |
+        git config --global user.name "github-actions[bot]"
+        git config --global user.email "github-actions[bot]@users.noreply.github.com"
+        
+        # Create and switch to an orphan web branch
+        git checkout --orphan web
+        git reset --hard
+        
+        # Copy web files to root
+        cp -r build/web/* .
+        
+        # Remove everything except web files
+        find . -maxdepth 1 ! -name '.' ! -name '.git' ! -name 'index.html' ! -name '*.js' ! -name '*.wasm' ! -name '*.pck' -exec rm -rf {} +
+        
+        # Add and commit
+        git add -A
+        echo "Files to be committed:"
+        git status
+        git commit -m "Deploy web build"
+        
+        # Force push to web branch
+        git push -f origin web
