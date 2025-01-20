@@ -18,7 +18,3 @@ config/icon="res://icon.svg"
 [display]
 
 window/size/always_on_top=true
-
-[editor_plugins]
-
-enabled=PackedStringArray("res://addons/globalize-plugins/plugin.cfg", "res://addons/godot_super-wakatime/plugin.cfg")
