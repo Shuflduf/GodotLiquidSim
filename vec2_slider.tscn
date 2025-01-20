@@ -1,13 +1,11 @@
 [gd_scene load_steps=2 format=3 uid="uid://c8b2dhjgesu0i"]
 
-[ext_resource type="Script" path="res://number_slider.gd" id="1_4kjko"]
+[ext_resource type="Script" path="res://vec2_slider.gd" id="1_g5f7b"]
 
 [node name="HBoxContainer" type="HBoxContainer"]
 theme_override_constants/separation = 10
 alignment = 2
-script = ExtResource("1_4kjko")
-lower_range = 0.0
-upper_range = 0.0
+script = ExtResource("1_g5f7b")
 
 [node name="Label" type="Label" parent="."]
 layout_mode = 2

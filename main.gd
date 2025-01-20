@@ -12,6 +12,7 @@ extends Node2D
 @export_range(0.0, 1.0) var collision_damping: float = 0.6
 @export_range(2, 500) var num_particles: int = 100
 @export var bounds_size: Vector2 = Vector2(600.0, 400.0)
+@export var mouse_strength: float = 50.0
 
 var particle_positions: Array[Vector2]
 var particle_velocities: Array[Vector2]
@@ -39,6 +40,16 @@ func _ready() -> void:
     update_densities()
 
 
+func _unhandled_input(event: InputEvent) -> void:
+    if event is InputEventMouseButton:
+        if Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT) or Input.is_mouse_button_pressed(MOUSE_BUTTON_RIGHT):
+            if event.button_index == MOUSE_BUTTON_WHEEL_DOWN:
+                effect_radius -= 5
+            elif event.button_index == MOUSE_BUTTON_WHEEL_UP:
+                effect_radius += 5
+
+            effect_radius = clamp(effect_radius, 5, 400)
+
 func _process(delta: float) -> void:
     if playing:
         for i in range(particle_positions.size()):
@@ -51,9 +62,9 @@ func _process(delta: float) -> void:
             if particle_positions[i].distance_squared_to(get_global_mouse_position()) < effect_radius ** 2:
                 var effect_dir = particle_positions[i].direction_to(get_global_mouse_position())
                 if Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT):
-                    particle_velocities[i] += effect_dir * 50
+                    particle_velocities[i] += effect_dir * mouse_strength
                 elif Input.is_mouse_button_pressed(MOUSE_BUTTON_RIGHT):
-                    particle_velocities[i] += effect_dir * -50
+                    particle_velocities[i] += effect_dir * -mouse_strength
 
             var pressure_force = calculate_pressure_force(i)
             var pressure_accel = pressure_force / densities[i]
