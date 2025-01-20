@@ -1,20 +1,14 @@
-[gd_scene load_steps=3 format=3 uid="uid://boefshpkw5c1u"]
+[gd_scene load_steps=4 format=3 uid="uid://boefshpkw5c1u"]
 
 [ext_resource type="Script" path="res://main.gd" id="1_bvny7"]
+[ext_resource type="PackedScene" uid="uid://doifiw4dk064w" path="res://number_slider.tscn" id="2_iyhjq"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_x0arq"]
 bg_color = Color(0, 0, 0, 1)
 
 [node name="World" type="Node2D"]
 script = ExtResource("1_bvny7")
-playing = true
-gravity = 400.0
-particle_size = 4.0
-smoothing_radius = 30.0
-target_density = 5.0
-pressure_multiplier = 50.0
-collision_damping = 0.4
-bounds_size = Vector2(600, 400)
+num_particles = 50
 
 [node name="Camera2D" type="Camera2D" parent="."]
 
@@ -28,3 +22,24 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_x0arq")
+
+[node name="Control" type="Control" parent="CanvasLayer"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer/Control"]
+layout_mode = 1
+anchors_preset = 11
+anchor_left = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -155.0
+grow_horizontal = 0
+grow_vertical = 2
+
+[node name="Gravity" parent="CanvasLayer/Control/VBoxContainer" instance=ExtResource("2_iyhjq")]
+layout_mode = 2

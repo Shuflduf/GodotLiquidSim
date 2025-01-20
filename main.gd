@@ -1,21 +1,41 @@
 extends Node2D
 
-@export var playing: bool
-@export var gravity: float = 150.0
-@export var particle_size: float = 8.0
-@export var smoothing_radius: float = 100.0
-@export var particle_spacing: float = 8.0
-@export var target_density: float
-@export var pressure_multiplier: float
-@export var mass: float = 1.0
+@export var playing: bool = true
+@export var gravity: float = 0.0
+@export var particle_size: float = 8.0:
+    set(value):
+        particle_size = clamp(value, 1.0, INF)
+@export var smoothing_radius: float = 100.0:
+    set(value):
+        smoothing_radius = clamp(value, 0.0, INF)
+@export var particle_spacing: float = 8.0:
+    set(value):
+        particle_spacing = clamp(value, 0.0, INF)
+@export var target_density: float = 10.0:
+    set(value):
+        target_density = clamp(value, 0.0, INF)
+@export var pressure_multiplier: float = 5.0:
+    set(value):
+        pressure_multiplier = clamp(value, 0.0, INF)
+@export var mass: float = 1.0:
+    set(value):
+        mass = clamp(value, 0.0, INF)
 
-@export_range(0.0, 1.0) var collision_damping: float = 1.0
-@export_range(2, 500) var num_particles: int = 100
-@export var bounds_size: Vector2 = Vector2(100.0, 100.0)
+@export_range(0.0, 1.0) var collision_damping: float = 0.6:
+    set(value):
+        collision_damping = clamp(value, 0.0, 1.0)
+@export_range(2, 500) var num_particles: int = 100:
+    set(value):
+        num_particles = clamp(value, 2, 625)
+@export var bounds_size: Vector2 = Vector2(600.0, 400.0):
+    set(value):
+        bounds_size = clamp(value, Vector2.ZERO, Vector2(800.0, 800.0))
 
 var particle_positions: Array[Vector2]
 var particle_velocities: Array[Vector2]
 var densities: Array[float]
+
+var effect_radius: float = 100.0
 
 func _ready() -> void:
     particle_positions.resize(num_particles)
@@ -46,8 +66,14 @@ func _process(delta: float) -> void:
             if densities[i] == 0:
                 continue
 
-            var pressure_force = calculate_pressure_force(i)
+            if particle_positions[i].distance_squared_to(get_global_mouse_position()) < effect_radius ** 2:
+                var effect_dir = particle_positions[i].direction_to(get_global_mouse_position())
+                if Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT):
+                    particle_velocities[i] += effect_dir * 50
+                elif Input.is_mouse_button_pressed(MOUSE_BUTTON_RIGHT):
+                    particle_velocities[i] += effect_dir * -50
 
+            var pressure_force = calculate_pressure_force(i)
             var pressure_accel = pressure_force / densities[i]
             particle_velocities[i] += pressure_accel * delta
 
@@ -60,8 +86,10 @@ func _process(delta: float) -> void:
 
 func _draw() -> void:
     for i in particle_positions.size():
-        draw_circle(particle_positions[i], particle_size, Color.LIGHT_BLUE)
+        draw_circle(particle_positions[i], particle_size, Color.WHITE)
     draw_rect(Rect2(-bounds_size.x / 2, -bounds_size.y / 2, bounds_size.x, bounds_size.y), Color.BLUE, false, 1.0)
+    if Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT) or Input.is_mouse_button_pressed(MOUSE_BUTTON_RIGHT):
+        draw_circle(get_global_mouse_position(), effect_radius, Color.GREEN, false, 1)
 
 func update_densities():
     for i in num_particles:
